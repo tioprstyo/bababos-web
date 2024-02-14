@@ -37,7 +37,6 @@ const Product = () => {
     } else {
       setFilterList(allProducts);
     }
-    
   }
   return (
     <div className='md:grid md:grid-cols-5 md:gap-5 md:p-8 p-5 text-left'>
