@@ -1,7 +1,8 @@
 import {
   createBrowserRouter,
   Outlet,
-  useLocation
+  useLocation,
+  Navigate
 } from "react-router-dom";
 import Login from './views/login';
 import Profile from "./views/profile";
@@ -20,30 +21,55 @@ const Layout = () => {
   )
 };
 
+const ProtectedRouteIsLogin = () => {
+  let auth = sessionStorage.getItem('username');
+  return (
+    auth ? <Outlet /> : <Navigate to="/login" />
+  )
+}
+
+const ProtectedRouteIsNotLogin = () => {
+  let auth = sessionStorage.getItem('username');
+  return (
+    !auth ? <Outlet /> : <Navigate to="/" />
+  )
+}
+
 const router = createBrowserRouter([
   {
     element: <Layout />,
     children: [
       {
-        path: "/login",
-        element: <Login />,
+        element: <ProtectedRouteIsNotLogin />,
+        children: [
+          {
+            path: "/login",
+            element: <Login />,
+          },
+        ]
       },
       {
-        path: "/profile",
-        element: <Profile />,
-      },
-      {
-        path: "/",
-        element: <Products />,
-      },
-      {
-        path: "/cart",
-        element: <Cart />,
-      },
-      {
-        path: "/detail",
-        element: <ProductDetail />,
-      },
+        element: <ProtectedRouteIsLogin />,
+        children: [
+          {
+            path: "/profile",
+            element: <Profile />,
+          },
+          {
+            path: "/",
+            element: <Products />,
+          },
+          {
+            path: "/cart",
+            element: <Cart />,
+          },
+          {
+            path: "/detail",
+            element: <ProductDetail />,
+          },
+        ]
+      }
+      
     ]
   }
 ]);
